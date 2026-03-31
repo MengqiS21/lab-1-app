@@ -67,21 +67,13 @@ For **each** feature, perform a **specific** action and record **expected** vs *
 
 ---
 
-## Recording template (copy and fill)
+## Test Recording
 
 | # | Feature tested | Action you took | Expected result | Actual result | Pass / Fail |
 |---|----------------|-----------------|-----------------|---------------|-------------|
 | 1 | Submit Request form | Filled required fields (Team #, item, qty, price, link/alternate info path) and clicked **Submit request** | Request is accepted, success toast appears, and a new row is appended in `requests.csv` with calculated total | Form submitted without crash; success message displayed; request row appeared in app table and persisted to CSV | Pass |
 | 2 | Coordinator View unlock + table edit | Entered coordinator password, opened dashboard, changed one request status/comment, then clicked **Save changes** | Coordinator panel unlocks; edited row saves; confirmation message shown; student update is queued when status/comment changes | Unlock succeeded; edited values persisted after rerun; save confirmation shown; notification/message side effects executed as designed | Pass |
 | 3 | Order conversation (non-Approved only) | In Coordinator **Order conversation**, selected a Pending/Needs Info request, sent message, then closed ticket; verified Approved requests do not appear in this panel | Message is posted to thread; close moves ticket to Archive; Approved items are excluded from open conversation list | Message appeared in thread immediately; close moved item under Archive tab; Approved request stayed out of conversation list | Pass |
-
-### Example rows (Purchase Request Manager — replace with your real test)
-
-| # | Feature tested | Action you took | Expected result | Actual result | Pass / Fail |
-|---|----------------|-----------------|-----------------|---------------|-------------|
-| 1 | Submit Request form | Filled required fields and clicked Submit | New row in `requests.csv` and success message | | |
-| 2 | Coordinator View | Entered password and unlocked | Dashboard and table visible | | |
-| 3 | Team inbox | Entered team # and opened Order messages expander | Thread or empty state loads without error | | |
 
 ---
 
