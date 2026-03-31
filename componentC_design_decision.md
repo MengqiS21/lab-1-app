@@ -30,7 +30,7 @@ Think about:
 
 ---
 
-## Example entry (Purchase Request Manager)
+## Purchase Request Manager
 
 | Field | Your entry |
 |--------|------------|
@@ -50,17 +50,3 @@ Think about:
 
 3. **What Cursor / AI produced**  
    The assistant started from a **single `app.py`** and a **`README`**, which matches the assignment’s file structure. I **accepted** that shape for the lab and extended it in place. If the course had required a package layout, I would refactor into modules after the behavior was stable.
-
----
-
-## Blank entry (copy for next week)
-
-| Field | Your entry |
-|--------|------------|
-| **Decision** | |
-| **Alternatives considered** | |
-| **Why you chose this** | |
-| **Trade-off** | |
-| **When would you choose differently?** | |
-
-**Prompt for next week:** *(instructor or you fill in)*

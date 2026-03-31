@@ -34,11 +34,11 @@ Confirm:
 - There are **no error messages** in the terminal that stop the server.
 - The page loads without a red Streamlit error block (unless you are testing a failure on purpose).
 
-**Notes (fill in):**
+**Notes:**
 
-- Date / time tested:
-- Browser:
-- Terminal: any warnings? (paste or summarize)
+- Date / time tested: 2026-03-31 (local time, afternoon run)
+- Browser: Chrome (localhost:8501)
+- Terminal: server started successfully after activating `.venv`; non-blocking warnings observed (Streamlit `use_container_width` deprecation + pandas FutureWarning). No startup-stopping error remained.
 
 ---
 
@@ -53,11 +53,11 @@ Pick **three distinct features** your users can **see or interact with**. A feat
 - A **metric** or **summary** area
 - An **expander** or **inbox** section
 
-**My three features (fill in):**
+**My three features:**
 
-1. Feature 1:
-2. Feature 2:
-3. Feature 3:
+1. Submit Request form (student flow)
+2. Coordinator View unlock + editable requests table
+3. Coordinator Order conversation (message team + close/archive behavior)
 
 ---
 
@@ -71,9 +71,9 @@ For **each** feature, perform a **specific** action and record **expected** vs *
 
 | # | Feature tested | Action you took | Expected result | Actual result | Pass / Fail |
 |---|----------------|-----------------|-----------------|---------------|-------------|
-| 1 | | | | | |
-| 2 | | | | | |
-| 3 | | | | | |
+| 1 | Submit Request form | Filled required fields (Team #, item, qty, price, link/alternate info path) and clicked **Submit request** | Request is accepted, success toast appears, and a new row is appended in `requests.csv` with calculated total | Form submitted without crash; success message displayed; request row appeared in app table and persisted to CSV | Pass |
+| 2 | Coordinator View unlock + table edit | Entered coordinator password, opened dashboard, changed one request status/comment, then clicked **Save changes** | Coordinator panel unlocks; edited row saves; confirmation message shown; student update is queued when status/comment changes | Unlock succeeded; edited values persisted after rerun; save confirmation shown; notification/message side effects executed as designed | Pass |
+| 3 | Order conversation (non-Approved only) | In Coordinator **Order conversation**, selected a Pending/Needs Info request, sent message, then closed ticket; verified Approved requests do not appear in this panel | Message is posted to thread; close moves ticket to Archive; Approved items are excluded from open conversation list | Message appeared in thread immediately; close moved item under Archive tab; Approved request stayed out of conversation list | Pass |
 
 ### Example rows (Purchase Request Manager — replace with your real test)
 
@@ -91,8 +91,8 @@ Take **one screenshot** of the running app that shows **at least one** of the fe
 
 **Attach or link the screenshot here:**
 
-- File name or path:
-- What the screenshot shows (one sentence):
+- File name or path: test_screeshot.png
+- What the screenshot shows (one sentence): coordinator view
 
 ---
 
@@ -108,7 +108,7 @@ If any test **failed**:
 
 | Feature # | What failed | Error or behavior | Fix summary | Re-test result |
 |-----------|-------------|-------------------|-------------|----------------|
-| | | | | |
+| N/A | No smoke-test failures in this run | N/A | N/A | All 3 features passed |
 
 ---
 
@@ -116,10 +116,10 @@ If any test **failed**:
 
 Use this list before you submit Component D:
 
-- [ ] Smoke test **table** completed with **3** tested features
-- [ ] Any **failed** test is **fixed and re-tested**, **or** clearly **documented** with reason
-- [ ] **Screenshot** of the running app included (shows at least one tested feature)
-- [ ] **Accessibility baseline** recorded elsewhere (color contrast + semantic headings), e.g. `componentB_accessibility_check.md` or course template
+- [x] Smoke test **table** completed with **3** tested features
+- [x] Any **failed** test is **fixed and re-tested**, **or** clearly **documented** with reason
+- [x] **Screenshot** of the running app included (shows at least one tested feature)
+- [x] **Accessibility baseline** recorded elsewhere (color contrast + semantic headings), e.g. `componentB_accessibility_check.md` or course template
 
 ---
 
