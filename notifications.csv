@@ -5,3 +5,12 @@ id,team,request_id,message,created_at,read,kind
 2,1,1,"**Request #1** — _ESP32_
 
 **Note:** change purchase link",2026-03-30T22:13:53,1,comment
+3,3,2,"**Request #2** — _ESP32S3_
+
+**Status:** Pending → **Approved**",2026-03-30T23:01:43,0,status
+4,4,3,"**Request #3** — _esp32s3_
+
+**Status:** Pending → **Approved**",2026-03-30T23:01:43,0,status
+5,4,3,"**Request #3** — _esp32s3_
+
+**Status:** Approved → **Rejected**",2026-03-30T23:04:31,0,status

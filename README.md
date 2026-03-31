@@ -52,7 +52,7 @@ The app opens in the browser (usually [http://localhost:8501](http://localhost:8
    On **Submit Request**, enter the same **Team #** as on the request, then read **Order updates** and open orders under **Order messages**.
 
 4. **Coordinator chat and close**  
-   In **Coordinator View**, **Requests table** tab, use **Order conversation** to choose an open request, **Send reply** if needed, then **Close ticket**. Check **Archive** for closed threads.
+   In **Coordinator View**, **Requests table** tab, use **Order conversation** to choose an open request, **Send message** if needed, then **Close ticket**. Check **Archive** for closed threads.
 
 5. **Clean slate (optional)**  
    To reset all local data, stop the app and delete these files if they exist: `requests.csv`, `notifications.csv`, `thread_messages.csv`. Restart the app; empty files with headers are recreated on first use.

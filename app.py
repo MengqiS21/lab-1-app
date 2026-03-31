@@ -516,6 +516,11 @@ def render_student_notifications() -> None:
     st.caption(
         "Enter your **Team #** (same as on your requests). Everything below is grouped under **Order updates**."
     )
+    # After submit we set `prefill_notify_team` (not this key) so we can assign here *before*
+    # the widget exists. Streamlit forbids assigning to `student_notify_team` after the widget runs.
+    if st.session_state.get("prefill_notify_team"):
+        st.session_state.student_notify_team = str(st.session_state.pop("prefill_notify_team")).strip()
+
     st.text_input(
         "Team # for inbox",
         key="student_notify_team",
@@ -558,15 +563,22 @@ def _coord_format_request_option(rid: int, team: str, item: str) -> str:
 
 
 def render_coordinator_open_conversations(df_all: pd.DataFrame) -> None:
-    """Active tickets: reply here or close when done."""
+    """Active tickets that are not Approved: message the team here or close. Approved = table only, no thread UI."""
     st.subheader("Order conversation")
     st.caption(
-        "Teams write from **Submit Request → Team inbox → Order messages**. "
-        "Reply below, then **Close ticket** when the conversation is finished (it moves to **Archive**)."
+        "Only **Pending**, **Rejected**, or **Needs Info** requests appear here. "
+        "**Approved** is handled in the requests table only (no back-and-forth in this panel). "
+        "Teams message from **Submit Request → Team inbox → Order messages**. "
+        "**Message the team** below, then **Close ticket** when done (moves to **Archive**)."
     )
-    open_df = df_all[df_all["conversation_closed"].astype(int) == 0].copy()
+    mask_open = df_all["conversation_closed"].astype(int) == 0
+    mask_not_approved = df_all["status"].astype(str).str.strip() != "Approved"
+    open_df = df_all[mask_open & mask_not_approved].copy()
     if open_df.empty:
-        st.info("No open order conversations.")
+        st.info(
+            "Nothing to show here. Either every open request is **Approved** (use the table below), "
+            "or there are no open tickets that need chat."
+        )
         return
 
     open_df = open_df.sort_values("id", ascending=False)
@@ -598,14 +610,14 @@ def render_coordinator_open_conversations(df_all: pd.DataFrame) -> None:
         st.markdown("")
 
     reply = st.text_area(
-        "Reply to team",
+        "Message to team",
         key=f"coord_reply_{pid}",
         height=100,
         placeholder="Type a message to the team…",
     )
     b1, b2 = st.columns(2)
     with b1:
-        if st.button("Send reply", key=f"coord_send_reply_{pid}", type="primary"):
+        if st.button("Send message", key=f"coord_send_reply_{pid}", type="primary"):
             if not str(reply).strip():
                 st.error("Enter a message to send.")
             else:
@@ -783,7 +795,7 @@ def render_student_form() -> None:
         save_requests(df)
         st.session_state.student_form_nonce += 1
         st.session_state.submitted_flash = f"Request **#{new_id}** submitted successfully."
-        st.session_state.student_notify_team = team_s
+        st.session_state.prefill_notify_team = team_s
         st.rerun()
 
 
@@ -849,7 +861,12 @@ def render_coordinator_view() -> None:
     # Prominent totals (filtered set)
     total_sum = pd.to_numeric(df_view["total_price"], errors="coerce").fillna(0).sum()
     n_req = len(df_view)
-    n_open_conv = int((df_all["conversation_closed"].astype(int) == 0).sum())
+    n_open_conv = int(
+        (
+            (df_all["conversation_closed"].astype(int) == 0)
+            & (df_all["status"].astype(str).str.strip() != "Approved")
+        ).sum()
+    )
     n_arch = int((df_all["conversation_closed"].astype(int) == 1).sum())
     st.subheader("Summary")
     m1, m2, m3, m4, m5 = st.columns(5)
@@ -861,7 +878,7 @@ def render_coordinator_view() -> None:
         all_sum = pd.to_numeric(df_all["total_price"], errors="coerce").fillna(0).sum()
         st.metric("All-time total (all requests)", f"${all_sum:,.2f}")
     with m4:
-        st.metric("Open conversations", n_open_conv)
+        st.metric("Open (needs chat)", n_open_conv)
     with m5:
         st.metric("Archived conversations", n_arch)
 
