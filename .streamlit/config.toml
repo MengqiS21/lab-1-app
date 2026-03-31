@@ -1,0 +1,13 @@
+# Fresh, soft palette — light mode (avoid system dark + harsh red accents)
+# Contrast (WCAG): body text #2D3B36 on #F6F9F7 ≈ 11:1 (passes 4.5:1).
+# Primary buttons: white on #4A7B66 ≈ 4.9:1 (passes 4.5:1 for normal text).
+[theme]
+base = "light"
+primaryColor = "#4A7B66"
+backgroundColor = "#F6F9F7"
+secondaryBackgroundColor = "#EEF4F1"
+textColor = "#2D3B36"
+font = "sans serif"
+
+[client]
+toolbarMode = "minimal"

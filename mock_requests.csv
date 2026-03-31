@@ -1,0 +1,11 @@
+Team number,CFO,Provider/supplier,Quantity,Name of item,Price,Link to this purchase,Notes,Approval from instruction
+3,Avery Chen,Amazon Business,2,USB-C hub 7-in-1,48.99,https://example.com/items/usb-hub-a12,Need for demo day,Y
+5,Jordan Kim,B&H Photo,1,Ring light 10",34.50,https://example.com/products/ring-light-10,Y
+2,Riley Patel,Spark Office Supply,4,Whiteboard markers (pack),18.00,,Bulk order for workshop room,N
+7,Morgan Lee,McMaster-Carr,6,M3 nylon standoff kit,22.40,https://example.com/mcmaster/m3-standoffs,Mechanical subteam request,Y
+1,Casey Nguyen,Digi-Key,25,Jumper wires assorted,12.75,https://example.com/digikey/jumpers-25pk,Electronics lab restock,Y
+4,Taylor Brooks,Local Print Shop,1,Team banner 3x5 ft,89.00,,Pickup Friday; invoice emailed,N
+6,Jamie Ortiz,Adafruit,3,Feather ESP32-S3,29.95,https://example.com/adafruit/feather-esp32s3,IoT prototype,Y
+8,Quinn Foster,University Bookstore,2,Lab notebook (bound),15.98,,Used course discount at register,Y
+9,Skyler Reed,Amazon Business,1,HDMI cable 6ft,9.49,https://example.com/items/hdmi-6ft,Spare for projector,N
+10,Reese Washington,Grainger,8,Safety glasses (anti-fog),64.00,https://example.com/grainger/safety-glasses,One per bench,Y

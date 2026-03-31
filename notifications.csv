@@ -1,0 +1,7 @@
+id,team,request_id,message,created_at,read,kind
+1,1,1,"**Request #1** — _ESP32_
+
+**Status:** Approved → **Rejected**",2026-03-30T22:08:56,1,status
+2,1,1,"**Request #1** — _ESP32_
+
+**Note:** change purchase link",2026-03-30T22:13:53,1,comment
