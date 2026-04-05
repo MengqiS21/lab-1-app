@@ -69,6 +69,18 @@ STATUS_OPTIONS = ["Pending", "Approved", "Rejected", "Needs Info"]
 
 TEAM_SUGGESTIONS = [str(i) for i in range(1, 21)]
 
+COORDINATOR_COMMENT_MAX_CHARS = 200
+
+
+def _coordinator_comment_cell_str(val) -> str:
+    """Normalize coordinator_comment from an editor cell to a plain string (for counting and save)."""
+    if pd.isna(val):
+        return ""
+    s = str(val).strip()
+    if s.lower() == "nan":
+        return ""
+    return s
+
 
 def ensure_csv_exists() -> None:
     if not CSV_PATH.exists():
@@ -554,6 +566,31 @@ def render_student_notifications() -> None:
         )
         render_student_order_messages_expanders(team_key)
 
+    st.subheader("Your submissions")
+    st.caption("Purchase requests for your Team # — newest first.")
+    team_req = load_requests()
+    team_req = team_req[team_req["team"].astype(str).str.strip() == team_key].copy()
+    if team_req.empty:
+        st.info("No requests from your team yet.")
+    else:
+        team_req["_ts"] = parse_ts(team_req["timestamp"])
+        team_req = team_req.sort_values(["_ts", "id"], ascending=[False, False], na_position="last")
+        submissions_df = pd.DataFrame(
+            {
+                "Item": team_req["item"].astype(str),
+                "Status": team_req["status"].astype(str),
+                "Total ($)": pd.to_numeric(team_req["total_price"], errors="coerce"),
+            }
+        )
+        st.dataframe(
+            submissions_df,
+            hide_index=True,
+            use_container_width=True,
+            column_config={
+                "Total ($)": st.column_config.NumberColumn("Total ($)", format="$%.2f"),
+            },
+        )
+
     st.divider()
 
 
@@ -939,13 +976,63 @@ def render_coordinator_view() -> None:
                 "non_amazon_info": st.column_config.TextColumn("Non-Amazon info", disabled=True, width="medium"),
                 "notes": st.column_config.TextColumn("Notes", disabled=True, width="small"),
                 "status": st.column_config.SelectboxColumn("Status", options=STATUS_OPTIONS, required=True),
-                "coordinator_comment": st.column_config.TextColumn("Coordinator comment", width="medium"),
+                "coordinator_comment": st.column_config.TextColumn(
+                    "Coordinator comment",
+                    width="medium",
+                    max_chars=COORDINATOR_COMMENT_MAX_CHARS,
+                    help=(
+                        f"Maximum {COORDINATOR_COMMENT_MAX_CHARS} characters. "
+                        "Character counts for each row appear directly below the table."
+                    ),
+                ),
             },
             hide_index=True,
             use_container_width=True,
             num_rows="fixed",
             key=f"coord_editor_{editor_key}",
         )
+
+        st.markdown(
+            '<p style="font-size:0.875rem;font-weight:600;margin:0.35rem 0 0.25rem 0;">'
+            "Coordinator comment — characters remaining"
+            "</p>",
+            unsafe_allow_html=True,
+        )
+        st.caption(
+            f"Up to {COORDINATOR_COMMENT_MAX_CHARS} characters per cell. "
+            "Counts refresh when you change a cell in the table."
+        )
+        _cc_rows: list[dict] = []
+        for _, erow in edited.iterrows():
+            rid = int(erow["id"])
+            text = _coordinator_comment_cell_str(erow["coordinator_comment"])
+            used = len(text)
+            rem = max(0, COORDINATOR_COMMENT_MAX_CHARS - used)
+            _cc_rows.append(
+                {
+                    "Request ID": rid,
+                    "Characters used": used,
+                    "Remaining": rem,
+                }
+            )
+        cc_count_df = pd.DataFrame(_cc_rows)
+        _df_h = min(220, max(72, 36 + min(len(cc_count_df), 10) * 36))
+        st.dataframe(
+            cc_count_df,
+            hide_index=True,
+            use_container_width=True,
+            height=_df_h if not cc_count_df.empty else 72,
+        )
+        _at_limit = [
+            int(r["Request ID"])
+            for r in _cc_rows
+            if r["Characters used"] >= COORDINATOR_COMMENT_MAX_CHARS
+        ]
+        if _at_limit:
+            st.warning(
+                f"Character limit reached ({COORDINATOR_COMMENT_MAX_CHARS} characters) for "
+                f"request ID(s): {', '.join(str(x) for x in _at_limit)}."
+            )
 
         save_col, hint_col = st.columns([1, 4])
         with save_col:
@@ -974,12 +1061,7 @@ def render_coordinator_view() -> None:
                 new_status = str(id_to_row.at[rid, "status"]).strip()
                 old_comment = str(full_before.at[i, "coordinator_comment"]).strip()
                 raw_new_c = id_to_row.at[rid, "coordinator_comment"]
-                if pd.isna(raw_new_c):
-                    new_comment = ""
-                else:
-                    new_comment = str(raw_new_c).strip()
-                    if new_comment.lower() == "nan":
-                        new_comment = ""
+                new_comment = _coordinator_comment_cell_str(raw_new_c)[:COORDINATOR_COMMENT_MAX_CHARS]
 
                 full.at[i, "status"] = new_status
                 full.at[i, "coordinator_comment"] = new_comment
